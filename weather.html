@@ -83,9 +83,10 @@
       date = (date.length < 2)? ('0' + date) : date;
       return [year,month,date].join('-');
     }
-    function getDayofWeek(date, month, year){
+    function getDayofWeek(date,month,year){
       var week_names = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       dayOfWeek =  week_names[new Date([month,date,year].join('-')).getDay()];
+      return dayOfWeek;
     }
     function getFarenheitTemp(temp){
       return (9*temp/5)+32;
@@ -136,6 +137,14 @@
 
        var thermometer = document.querySelector("#thermometer_inner");
        thermometer.style.height = temp_today + '%';
+      //  EXTRA CREDIT part 2
+       if (temp_today < 65){
+         thermometer.style.background = 'blue';
+       } else if (temp_today > 85) {
+         thermometer.style.background = 'red';
+       } else{
+         thermometer.style.background = 'grey';
+       }
 
        var precip_today = data.current.precip;
        document.getElementById("precip_today").innerHTML = precip_today + "%";
@@ -151,13 +160,14 @@
 
 				/* Process the daily forecast for the next 5 days */
         //helper function - to be used to get the key for each of the 5 days in the future when creating cards for forecasting weather
-        function getKey(i){
+        function getKey(i) {
             var date = new Date();
             var d = date.getDate() + i;
             var m = date.getMonth() + 1;
             var y = date.getFullYear();
             var key_forecast = formatDate(d.toString(),m.toString(),y.toString()).toString();
-            getDayofWeek(d,m,y);
+            dayOfWeek = getDayofWeek(d,m,y); // added "dayOfWeek = " at front
+            console.log(d+ " " + m + " " + y);
             return data.forecast[key_forecast];
         }
 				/*
@@ -185,28 +195,55 @@
 
 					<Hint2 - To add the cards to the HTML> - Make sure to use string concatenation to add the html code for the daily weather cards.  This should
 					be set to the innerHTML for the 5_day_forecast.
-				*/
+        */
+        
+        var forecastData = data.forecast;
+        console.log("forecastData");
+        for(let i=0; i<5; i++) {
+          var f = getKey(i);
+          // console.log(f);
+
+        
+          
+        // date: "2020-04-11"
+        // date_epoch: 1586563200
+        // astro: {sunrise: "06:28 AM", sunset: "07:36 PM", moonrise: "No moonrise", moonset: "09:06 AM", moon_phase: "Waning Gibbous", …}
+        // mintemp: 4
+        // maxtemp: 16
+        // avgtemp: 10
+        // totalsnow: 0
+        // sunhour: 0
+        // uv_index: 2
+
+
+          console.log(dayOfWeek);
+
+          var c = $('<div style="width: 20%;"><div class="card"><div class="card-body"><h5 class="card-title">' + dayOfWeek + '</h5><p class="card-text">High: ' + getFarenheitTemp(f.maxtemp) + ' F<br>Low: ' + getFarenheitTemp(f.mintemp) + ' F<br>Sunrise: ' + f.astro.sunrise + '<br>Sunset: ' + f.astro.sunset + '</p></div></div></div>')
+          
+          c.appendTo('#5_day_forecast');
+        }
 			})
-		})
+    })
 
-    for(let i=0; i<5; i++) {
-      var forecast = getKey(i);
-    
-      // var content =
-      // <div style="width: 20%;">
-      //   <div class="card">
-      //     <div class="card-body">
-      //       <h5 class="card-title"><!-- List Day of the Week Here --></h5>
-      //       <p class="card-text">High:<!--List Temperature High --> <br>
-      //         Low: <!-- List Temperature Low --><br>
-      //         Sunrise: <!-- List Time of Sunrise --><br>
-      //         Sunset: <!-- List Time of Sunset --></p>
-      //     </div>
-      //   </div>
-      // </div>
-  }
 
-    // document.body.appendChild("<div style=width: 20%><div class=card><div class=card-body><h5 class=card-title>></h5><p class=card-text>High: <br>Low: <br>Sunrise: <br>Sunset: </p></div></div></div>");
+    // var card = document.getElementById(id)
+    // var tweet = $('<div class="card" id="tweet"><img class="card-img-top" src="resources/twitterLogo.jfif" alt="Twitter logo"></img></div>');
+
+    // // $("#tweet").addClass"card-body"
+    // $("#",id).append(tweet)
+    // var randID = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    // $("#tweet").attr('id',randID);
+
+  
+
+
+    function addCard(id) {
+      c = document.getElementById(id);
+
+      var tweet = $('<div class="card"><p>Placeholder text for tweet</p></div>')
+
+      tweet.appendTo("#"+id);
+    }
 
  	</script>
 </body>
